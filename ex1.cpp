@@ -159,10 +159,6 @@ Variable& Variable::operator-=(double val) {
     return *this;
 }
 
-/* 
- * found this code on microsoft website. link below:
- * https://docs.microsoft.com/en-us/cpp/cpp/increment-and-decrement-operator-overloading-cpp?view=vs-2019
- */
 Variable& Variable::operator++(int num) {
     return ++*this;
 }
@@ -188,7 +184,7 @@ Expression* Interpreter::interpret(string tokens) {
             double num = toDouble(tokens[i]);
             double num2 = 0;
 
-            while (isDigit(tokens[i+1]) && (i+1) < tokens.length)
+            while ((i+1) < tokens.length && isDigit(tokens[i+1]))
             {
                 ++i;
                 double temp = toDouble(tokens[i]);
@@ -212,11 +208,74 @@ Expression* Interpreter::interpret(string tokens) {
                 }
             }
             num = num + num2;
-            numbers.push(num);
+            output.push(new Value(num));
+        } else if (isOperator(tokens[i]))
+        {
+            if ((i == 0 || tokens[i-1] == '(') && i+1 < tokens.length && isValidUnary(tokens[i], tokens[i+1]))
+            {
+                if (tokens[i] == '-')
+                {
+                    operations.push('#'); //Unary minus's sign (my choice).
+                } else
+                {
+                    operations.push('@'); //Unary plus's sign (my choice).
+                } 
+            } else if (i != 0 && i+1 < tokens.length)
+            {
+                
+            }
+                 
+            
+        }
+        
+        
+    }
+    
+}
+
+bool isValidBinary(char prev, char op, char next) {
+    if (!isOperator(prev) && !isOperator(next) && prev != '(')
+    {
+        if (op == '-' && (!isDigit(next) || next != '('))
+        {
+            return false;
         }
         
     }
     
+}
+
+bool isValidUnary(char op, char next) {
+    if ((next == '(' || isDigit(next)) && (op == '-' || op == '+'))
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
+    
+}
+
+int precedenceOf(char op) {
+    if (op == '-' || op == '+')
+    {
+        return 1;
+    } else  //op == '*' or '/'
+    {
+        return 2;
+    }
+    
+    
+}
+
+bool isOperator(char c) {
+   if (c == '+' || c == '-' || c == '*' || c == '/')
+   {
+       return true;
+   } else {
+       return false;
+   }
+   
 }
 
 double toDouble(char c) {

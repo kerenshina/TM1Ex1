@@ -98,8 +98,8 @@ class Value: public Expression {
 
 class Interpreter {
     private:
-        queue<double> numbers;
-        stack<char> operators;
+        queue<Expression*> output;
+        stack<char> operations;
 
     public:
         Expression* interpret(string tokens);
